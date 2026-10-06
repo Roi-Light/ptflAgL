@@ -942,7 +942,19 @@ p{text-wrap:pretty}
   const io=new IntersectionObserver(es=>es.forEach(e=>{
     if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}
   }),{threshold:.15,rootMargin:'0px 0px -8% 0px'});
-  $$('[data-r],[data-split],.cover,.cefr').forEach(el=>io.observe(el));
+  $$('[data-r],[data-split],.cefr').forEach(el=>io.observe(el));
+
+  // Illustrations des projets : on observe l'article, jamais masqué,
+  // et non l'illustration elle-même. Son clip-path la rend invisible au départ,
+  // donc le navigateur mesurait une surface visible nulle et ne la révélait jamais.
+  const co=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){
+      const c=e.target.querySelector('.cover');
+      if(c)c.classList.add('in');
+      co.unobserve(e.target);
+    }
+  }),{threshold:0,rootMargin:'0px 0px -12% 0px'});
+  $$('.proj').forEach(p=>co.observe(p));
 
   // Défilement : barre de progression, navigation, citation, frise
   const prog=$('.progress span'),tl=$('.tl'),items=$$('.tl li');
